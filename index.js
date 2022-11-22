@@ -6,7 +6,7 @@ const randomInt = (value) => Math.floor(Math.random() * value)
 let answers = {}
     cookies = {}
 
-const TIMEOUT = 1000
+const TIMEOUT = 0
 
 const instance = axios.create({
   baseURL: 'https://kp-guess-game-api.kinopoisk.ru/v1',
@@ -74,7 +74,7 @@ const main = async () => {
   }
   const games = (await instance.get('https://kp-guess-game-api.kinopoisk.ru/v1/episodes')).data.episodes.filter(episode => new Date(episode.startsAt) > new Date())
   answers = JSON.parse(await fs.readFile('answers.json', 'utf8'))
-  for (let i = 1; i <= games.length; i++) {
+  for (let i = 2; i <= games.length; i++) {
     console.log(`В базе ${Object.keys(answers[i]).length} ответов на ${i} квиз!`)
     await Promise.all(cookies.map((cookie, j) => kinopoisk(j, cookie, i).catch(e => { console.log(e) })))
   }
