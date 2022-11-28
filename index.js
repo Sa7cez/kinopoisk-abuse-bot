@@ -25,12 +25,21 @@ const instance = axios.create({
 
 const kinopoisk = async (account, cookie, gameId) => {
   const targets = {
-    1: 175 + randomInt(100),
+    1: 75 + randomInt(100),
     2: 100 + randomInt(50),
-    3: 175 + randomInt(100),
-    4: 150 + randomInt(50),
-    5: 100 + randomInt(50),
-    6: 100 + randomInt(50),
+    3: 75 + randomInt(100),
+    4: 50 + randomInt(50),
+    5: 50 + randomInt(50),
+    6: 50 + randomInt(50),
+    7: 50 + randomInt(50),
+    8: 50 + randomInt(50),
+    9: 50 + randomInt(50),
+    10: 50 + randomInt(50),
+    11: 50 + randomInt(50),
+    12: 50 + randomInt(50),
+    13: 50 + randomInt(50),
+    14: 50 + randomInt(50),
+    15: 100 + randomInt(50),
   }
   const headers = { headers : { cookie: cookie } }
   const game = (await instance.post('games', { gameId: gameId }, headers)).data
@@ -72,9 +81,11 @@ const main = async () => {
   } catch {
     console.log('Создайте файл cookies.txt, где в каждой строчке ваши куки для Кинопоиска.')
   }
-  const games = (await instance.get('https://kp-guess-game-api.kinopoisk.ru/v1/episodes')).data.episodes.filter(episode => new Date(episode.startsAt) > new Date())
+  const episodes = (await instance.get('https://kp-guess-game-api.kinopoisk.ru/v1/episodes')).data.episodes.filter(episode => new Date(episode.startsAt) < new Date())
+  const games = episodes.reduce((acc, episode) => acc + episode.games.length, 0)
   answers = JSON.parse(await fs.readFile('answers.json', 'utf8'))
-  for (let i = 2; i <= games.length; i++) {
+  for (let i = 1; i <= games; i++) {
+    if (!answers[i]) answers[i] = {}
     console.log(`В базе ${Object.keys(answers[i]).length} ответов на ${i} квиз!`)
     await Promise.all(cookies.map((cookie, j) => kinopoisk(j, cookie, i).catch(e => { console.log(e) })))
   }
